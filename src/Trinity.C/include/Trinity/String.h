@@ -150,7 +150,7 @@ namespace Trinity
 #ifdef TRINITY_PLATFORM_WINDOWS
         String& Insert(const_iterator p, std::initializer_list<char> il) { _string.insert(p, il); return *this; }
 #else
-        TRINITY_COMPILER_WARNING("String::Insert(iterator p, std::initializer_list<char> il)!")
+        //TRINITY_COMPILER_WARNING("String::Insert(iterator p, std::initializer_list<char> il)!")
 
         // XXX GCC5.2.1 + libstdc++-5 does not include basic_string::insert(const_iterator, initializer_list<>)
         String& Insert(iterator p, std::initializer_list<char> il){ _string.insert(p, il); return *this; }
@@ -452,8 +452,8 @@ namespace Trinity
                 size_t tpl_index;
                 int    tpl_padding = 0;
 
-                if (!tpl.TryParse(tpl_index))
-                    break;
+                // if (!tpl.TryParse((uint64_t)tpl_index))
+                //     break;
 
                 if (tpl.Contains(':'))
                     tpl.Split(":")[1].TryParse(tpl_padding);

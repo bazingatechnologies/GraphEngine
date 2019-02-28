@@ -207,4 +207,99 @@ namespace Trinity
         }
     }
 }
+#elif defined(TRINITY_PLATFORM_DARWIN)
+#include "Network/Network.h"
+#include "Events/Events.h"
+#include "Trinity/Diagnostics/Log.h"
+
+#include <queue>
+#include <mutex>
+
+namespace Trinity
+{
+    namespace Events
+    {
+        int epoll_fd;
+
+        class epoll_compute_queue_t
+        {
+            work_t* pmaster_work;
+            std::mutex lock;
+            std::queue<work_t*> work_queue;
+            int evfd;
+
+        public:
+            epoll_compute_queue_t()
+            {
+                pmaster_work = alloc_work(worktype_t::Compute);
+                pmaster_work->pcompute_data = this;
+            }
+
+            void enqueue(work_t* pwork)
+            {
+                {
+                    std::lock_guard<std::mutex> g(lock);
+                    work_queue.push(pwork);
+                }
+                // eventfd_write(evfd, 1);
+            }
+
+            work_t* dequeue()
+            {
+                work_t* pwork;
+                {
+                    std::lock_guard<std::mutex> g(lock);
+                    pwork = work_queue.front();
+                    work_queue.pop();
+                }
+
+                return pwork;
+            }
+
+            ~epoll_compute_queue_t()
+            {
+                while (work_queue.size())
+                {
+                    //TODO finish the work?
+                    free_work(work_queue.front());
+                    work_queue.pop();
+                }
+                close(evfd);
+                free_work(pmaster_work);
+            }
+        };
+
+        using Network::sock_t;
+        std::vector<std::unique_ptr<epoll_compute_queue_t>> compute_queues;
+        size_t compute_queue_idx = 0;
+
+        TrinityErrorCode platform_poll(OUT work_t* &pwork, OUT uint32_t &szwork)
+        {
+            return TrinityErrorCode::E_FAILURE;
+        }
+
+        TrinityErrorCode platform_start_eventloop()
+        {
+            Diagnostics::WriteLine(Diagnostics::LogLevel::Error, "Cannot create epoll set: {0}", errno);
+            return TrinityErrorCode::E_FAILURE;
+        }
+
+        TrinityErrorCode platform_stop_eventloop()
+        {
+            return TrinityErrorCode::E_FAILURE;
+        }
+
+        TrinityErrorCode enter_eventloop(sock_t* pContext)
+        {
+            return TrinityErrorCode::E_FAILURE;
+        }
+
+        TrinityErrorCode platform_post_workitem(work_t* pwork)
+        {
+            auto idx = (compute_queue_idx++) % compute_queues.size();
+            compute_queues[idx]->enqueue(pwork);
+            return TrinityErrorCode::E_SUCCESS;
+        }
+    }
+}
 #endif

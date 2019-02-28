@@ -12,6 +12,10 @@
 #include <sys/ptrace.h>
 #endif
 
+#if defined(TRINITY_PLATFORM_DARWIN)
+#include <sys/mman.h>
+#endif
+
 using Trinity::Diagnostics::LogLevel;
 using Trinity::Diagnostics::WriteLine;
 
@@ -472,7 +476,7 @@ namespace Memory
 #if defined(TRINITY_PLATFORM_WINDOWS)
 #pragma warning(suppress: 6250)
         return VirtualFree(lpAddr, size, MEM_DECOMMIT);
-#elif defined(TRINITY_PLATFORM_LINUX)
+#elif defined(TRINITY_PLATFORM_LINUX) || defined(TRINITY_PLATFORM_DARWIN)
         do
         {
             if(mprotect(lpAddr, size, PROT_NONE) != 0) break;
@@ -521,7 +525,10 @@ namespace Memory
     {
 #if defined(TRINITY_PLATFORM_WINDOWS)
         double* p = (double*)_aligned_malloc(size, alignment);
-#else
+#elif defined(TRINITY_PLATFORM_DARWIN)
+        double* p;
+        posix_memalign((void**)&p, alignment, size);
+#else 
         double* p = (double*)aligned_alloc(alignment, size);
 #endif
         uint64_t count = size >> 3;

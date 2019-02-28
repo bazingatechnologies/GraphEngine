@@ -43,6 +43,10 @@ DLL_EXPORT void*             C_aligned_malloc(uint64_t size, uint64_t alignment)
 {
 #ifdef TRINITY_PLATFORM_WINDOWS
     return _aligned_malloc(size, alignment);
+#elif defined(TRINITY_PLATFORM_DARWIN)
+        double* p;
+        posix_memalign((void**)&p, alignment, size);
+        return p;
 #else
     return aligned_alloc(size, alignment);
 #endif

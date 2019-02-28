@@ -6,6 +6,12 @@
 #include "Network.h"
 #include "Trinity/Diagnostics/Log.h"
 
+#if defined(TRINITY_PLATFORM_DARWIN)
+#include <netinet/tcp.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#endif
+
 namespace Trinity
 {
     namespace Network
@@ -48,10 +54,15 @@ namespace Trinity
                     closesocket(socket);
                     return INVALID_SOCKET;
                 }
+#elif defined(TRINITY_PLATFORM_DARWIN)
+                int on = 1;
+                int32_t keepintvl = 3000;
+                setsockopt(socket, SOL_SOCKET,  SO_KEEPALIVE, &on, sizeof(on));
+                setsockopt(socket, IPPROTO_TCP, TCP_KEEPALIVE, &keepintvl, sizeof(keepintvl));
 #else
                 int32_t keepidle  = 60000;
                 int32_t keepintvl = 3000;
-                setsockopt(socket, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle, sizeof(int32_t));
+                setsockopt(socket, IPPROTO_TCP, SO_TCP_KEEPIDLE, &keepidle, sizeof(int32_t));
                 setsockopt(socket, IPPROTO_TCP, TCP_KEEPINTVL, &keepintvl, sizeof(int32_t));
 #endif
             }

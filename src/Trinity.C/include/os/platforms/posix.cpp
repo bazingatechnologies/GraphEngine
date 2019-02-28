@@ -5,5 +5,8 @@
 #include <os/os.h>
 
 #if !defined(TRINITY_PLATFORM_WINDOWS)
+
+#include <errno.h>
+
 int GetLastError(){return errno;}
 #endif

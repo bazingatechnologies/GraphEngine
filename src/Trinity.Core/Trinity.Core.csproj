@@ -70,6 +70,9 @@
     <Content Include="$(XPLAT_LIB_DIR)\Trinity.dll">
       <PackagePath>runtimes\win-x64\native</PackagePath>
     </Content>
+    <Content Include="$(XPLAT_LIB_DIR)\libTrinity.dylib">
+      <PackagePath>runtimes\osx-x64\native</PackagePath>
+    </Content>
     <Content Include="$(XPLAT_LIB_DIR)\libTrinity.so">
       <PackagePath>runtimes\linux-x64\native</PackagePath>
     </Content>

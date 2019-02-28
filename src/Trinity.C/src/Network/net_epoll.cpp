@@ -52,4 +52,28 @@ namespace Trinity
         }
     }
 }
+#elif defined(TRINITY_PLATFORM_DARWIN)
+#include "Network.h"
+#include "Events/Events.h"
+#include "SocketOptionsHelper.h"
+
+namespace Trinity
+{
+    namespace Events
+    {
+        extern int epoll_fd;
+    }
+    namespace Network
+    {
+        TrinityErrorCode recv_async(sock_t* p)
+        {
+            return TrinityErrorCode::E_NETWORK_RECV_FAILURE;
+        }
+
+        TrinityErrorCode send_async(sock_t* p)
+        {
+            return TrinityErrorCode::E_NETWORK_SEND_FAILURE;
+        }
+    }
+}
 #endif

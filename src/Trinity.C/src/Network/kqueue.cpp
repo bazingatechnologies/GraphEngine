@@ -3,9 +3,9 @@
 // Licensed under the MIT license. See LICENSE.md file in the project root for full license information.
 //
 #include <os/os.h>
-#if ((!defined(__linux__)) && (defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))))
+#if !((!defined(__linux__)) && (defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))))
 #include "Network/ProtocolConstants.h"
-#include "TrinitySocketServer.h"
+//#include "TrinitySocketServer.h"
 #include <sys/event.h>
 
 namespace Trinity

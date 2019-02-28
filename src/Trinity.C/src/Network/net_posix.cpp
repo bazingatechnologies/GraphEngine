@@ -3,6 +3,15 @@
 // Licensed under the MIT license. See LICENSE.md file in the project root for full license information.
 //
 #include "os/os.h"
+
+#if defined(TRINITY_PLATFORM_DARWIN)
+#include <netinet/tcp.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+ #include <fcntl.h>
+ # define SOCK_NONBLOCK O_NONBLOCK
+#endif
+
 #if !defined(TRINITY_PLATFORM_WINDOWS)
 #include "Network.h"
 #include "Events/Events.h"
@@ -24,7 +33,11 @@ namespace Trinity
             {
                 sockaddr addr;
                 socklen_t addrlen = sizeof(sockaddr);
+                #if defined(TRINITY_PLATFORM_DARWIN)
+                int connected_sock_fd = accept(accept_sock, &addr, &addrlen);
+                #else
                 int connected_sock_fd = accept4(accept_sock, &addr, &addrlen, SOCK_NONBLOCK);
+                #endif
                 if (-1 == connected_sock_fd)
                 {
                     /* Break the loop if listening socket is shut down. */

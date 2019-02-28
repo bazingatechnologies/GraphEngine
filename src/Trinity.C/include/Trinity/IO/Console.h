@@ -99,7 +99,7 @@ namespace Trinity
 #ifdef TRINITY_PLATFORM_WINDOWS
                 SetConsoleTextAttribute(handle, (WORD)color);
 #else
-                TRINITY_COMPILER_WARNING("Console::SetColor not implemented")
+//                TRINITY_COMPILER_WARNING("Console::SetColor not implemented")
 #endif
             }
 

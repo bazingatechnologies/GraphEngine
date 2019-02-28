@@ -85,6 +85,7 @@ namespace Trinity
 #if defined(TRINITY_PLATFORM_WINDOWS)
             WSABUF wsa_buf;  // size: 16
 #elif defined(TRINITY_PLATFORM_LINUX)
+#elif defined(TRINITY_PLATFORM_DARWIN)
 #else
 #error("unsupported")
 #endif

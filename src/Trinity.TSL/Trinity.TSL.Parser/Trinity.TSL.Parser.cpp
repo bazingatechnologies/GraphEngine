@@ -26,8 +26,13 @@ NTSL* start_parser(const std::vector<String>& filelist)
     set_lex_nonstop_mode(false);
     for (auto &f : filelist)
     {
+        #if defined(TRINITY_PLATFORM_DARWIN)
+        if (push_new_file(new std::string(f.c_str())) != 0)
+            return NULL;
+        #else
         if (push_new_file(new std::string(f)) != 0)
             return NULL;
+        #endif
     }
 #if YYDEBUG
     yydebug = 1;

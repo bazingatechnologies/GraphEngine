@@ -53,6 +53,9 @@ double multiply_sparse_double_vector(double *  dv1, double *  dv2, int32_t * idx
 
 #ifdef TRINITY_PLATFORM_WINDOWS
 	double* __dv1 = (double*)_aligned_malloc((size_t)count << 3, 16);
+#elif defined(TRINITY_PLATFORM_DARWIN)
+        double* __dv1;
+        posix_memalign((void**)&__dv1, (size_t)count << 3, 16);
 #else
 	double* __dv1 = (double*)aligned_alloc((size_t)count << 3, 16);
 #endif

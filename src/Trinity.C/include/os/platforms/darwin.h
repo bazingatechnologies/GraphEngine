@@ -8,3 +8,8 @@
 #define TRINITY_PLATFORM_DARWIN
 #include "posix.h"
 #endif
+
+//#if defined(__OSX__)
+#define TRINITY_PLATFORM_DARWIN
+#include "posix.h"
+//#endif
