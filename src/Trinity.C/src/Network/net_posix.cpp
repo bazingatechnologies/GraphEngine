@@ -8,8 +8,8 @@
 #include <netinet/tcp.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
- #include <fcntl.h>
- # define SOCK_NONBLOCK O_NONBLOCK
+#include <fcntl.h>
+#define SOCK_NONBLOCK O_NONBLOCK
 #endif
 
 #if !defined(TRINITY_PLATFORM_WINDOWS)
